@@ -199,34 +199,119 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 2. Who was the 6th highest spender? (No need to insert query here, just type in the answer.)
 
    ```
-   [YOUR ANSWER HERE]
+   TOM STEYER 2020
    ```
 
 3. What week_start_date had the highest spend? (No need to insert query here, just type in the answer.)
 
    ```
-   [YOUR ANSWER HERE]
+   2020-09-13 : 21885400
+
    ```
 
 4. Using the `advertiser_weekly_spend` table, write a query that returns the sum of spend by week (using week_start_date) in usd for the month of August only.
    ```
-   [YOUR QUERY HERE]
+   WITH 
+     T as (
+     SELECT
+       EXTRACT(MONTH FROM week_start_date) as month,
+       EXTRACT(YEAR FROM week_start_date) as year,
+--   week_start_date,
+       SUM(spend_usd) as usd,
+     FROM
+       `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+     GROUP BY 
+       week_start_date  
+     )
+  
+   SELECT 
+     T.year,
+     SUM(T.usd) as august_total
+   FROM 
+     T 
+   WHERE 
+     T.month = 8
+   GROUP BY 
+     T.year
    ```
 5. How many ads did the 'TOM STEYER 2020' campaign run? (No need to insert query here, just type in the answer.)
    ```
-   [YOUR ANSWER HERE]
+   50
    ```
 6. Write a query that has, in the US region only, the total spend in usd for each advertiser_name and how many ads they ran. (Hint, you're going to have to join tables for this one).
+
    ```
-   	[YOUR QUERY HERE]
+   WITH
+     adv_money AS (
+     SELECT
+       advertiser_name ,
+       SUM(spend_usd) AS usd_spent
+     FROM
+       `bigquery-public-data.google_political_ads.advertiser_weekly_spend` 
+     GROUP BY 
+       advertiser_name
+     ),
+     adv_ad_count AS (
+     SELECT 
+       advertiser_name,
+       count(*) as num_ads
+     FROM
+       `bigquery-public-data.google_political_ads.advertiser_weekly_spend` 
+     GROUP BY 
+       advertiser_name 
+     )
+
+   SELECT
+     A.advertiser_name,
+     A.usd_spent,
+     B.num_ads 
+   FROM
+     adv_money as A
+     JOIN
+     adv_ad_count as B
+     ON 
+     A.advertiser_name = B.advertiser_name
+   WHERE 
+     A.usd_spent > 0
+
    ```
+
 7. For each advertiser_name, find the average spend per ad.
+
    ```
-   [YOUR QUERY HERE]
+   SELECT
+     advertiser_name,
+     ROUND(AVG(spend_usd), 2) as avg_usd_spent
+   FROM
+     `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+   GROUP BY
+     advertiser_name
    ```
+
 8. Which advertiser_name had the lowest average spend per ad that was at least above 0.
+
    ```
-   [YOUR QUERY HERE]
+	Ans: GREG CHANEY
+
+   WITH 
+     T AS (
+     SELECT
+       advertiser_name,
+       ROUND(AVG(spend_usd), 2) as avg_usd_spent
+     FROM
+       `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+     GROUP BY
+       advertiser_name
+     )
+  
+   SELECT 
+     * 
+   FROM 
+     T
+   WHERE 
+     T.avg_usd_spent > 0
+   ORDER BY 
+     T.avg_usd_spent 
    ```
 
 ## For this next section, use the `new_york_citibike` datasets.
