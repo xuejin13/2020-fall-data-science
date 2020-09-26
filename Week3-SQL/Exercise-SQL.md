@@ -12,6 +12,7 @@
 For this section of the exercise we will be using the `bigquery-public-data.austin_311.311_service_requests` table.
 
 5. Write a query that tells us how many rows are in the table.
+
    ```
    SELECT
      COUNT(*)
@@ -37,67 +38,72 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 
    ```
    WITH
-  T AS (
-  SELECT
-    owning_department,
-    COUNT(*) AS count
-  FROM
-    `bigquery-public-data.austin_311.311_service_requests`
-  GROUP BY
-    owning_department )
-SELECT
-  *
-FROM
-  T
-ORDER BY 
- count DESC
+     T AS (
+     SELECT
+       owning_department,
+       COUNT(*) AS count
+     FROM
+       `bigquery-public-data.austin_311.311_service_requests`
+     GROUP BY
+       owning_department )
+
+   SELECT
+     *
+   FROM
+     T
+   ORDER BY 
+     count DESC
    ```
 
 8. Write a query that lists the top 5 complaint_description that appear most and the amount of times they appear in this table. (hint... limit)
+
    ```
-   WITH T as (
-SELECT
-  complaint_description,
-  COUNT(*) as count
-FROM
-  `bigquery-public-data.austin_311.311_service_requests`
-GROUP BY 
-  complaint_description 
- )
+   WITH 
+     T as (
+     SELECT
+       complaint_description,
+       COUNT(*) as count
+     FROM
+       `bigquery-public-data.austin_311.311_service_requests`
+     GROUP BY 
+       complaint_description 
+     )
  
-SELECT 
-  *
-FROM 
-  T
-ORDER BY 
-  count DESC 
-LIMIT  
-  5
+   SELECT 
+     *
+   FROM 
+     T
+   ORDER BY 
+     count DESC 
+   LIMIT  
+     5
    ```
+
 9. Write a query that lists and counts all the complaint_description, just for the where the owning_department is 'Animal Services Office'.
 
    ```
    WITH
-  T AS (
-  SELECT
-    complaint_description,
-    COUNT(*) AS count
-  FROM
-    `bigquery-public-data.austin_311.311_service_requests`
-  WHERE 
-    owning_department in ('Animal Services Office')
-  GROUP BY 
-    complaint_description  )
-SELECT
-  *
-FROM
-  T
+     T AS (
+     SELECT
+       complaint_description,
+       COUNT(*) AS count
+     FROM
+       `bigquery-public-data.austin_311.311_service_requests`
+     WHERE 
+       owning_department in ('Animal Services Office')
+     GROUP BY 
+       complaint_description  )
+   SELECT
+     *
+   FROM
+     T
    ```
 
 10. Write a query to check if there are any duplicate values in the unique_key column (hint.. There are two was to do this, one is to use a temporary table for the groupby, then filter for values that have more than one count, or, using just one table but including the `having` function).
-    ```
-      -- WITH
-  --   T AS (
+    
+   ```
+    -- WITH
+    --   T AS (
     --   SELECT
     --     unique_key,
     --     COUNT(*) as count
@@ -106,30 +112,31 @@ FROM
     --   GROUP BY
     --     unique_key
     --   )
-  -- SELECT
-  --   *
-  -- FROM
-  --   T
-  -- WHERE
-  --   count > 1
+    -- SELECT
+    --   *
+    -- FROM
+    --   T
+    -- WHERE
+    --   count > 1
   
-  
-WITH
-  T AS (
-  SELECT
-    unique_key,
-    COUNT(*) AS count,
-  FROM
-    `bigquery-public-data.austin_311.311_service_requests`
-  GROUP BY
-    unique_key
-  HAVING
-    COUNT(unique_key) > 1 )
-SELECT
-  *
-FROM
-  T
-    ```
+   WITH
+     T AS (
+   SELECT
+     unique_key,
+     COUNT(*) AS count,
+   FROM
+     `bigquery-public-data.austin_311.311_service_requests`
+   GROUP BY
+     unique_key
+   HAVING
+     COUNT(unique_key) > 1 
+   )
+
+   SELECT
+     *
+   FROM
+     T
+   ```
 
 ### For the next question, use the `census_bureau_usa` tables.
 
