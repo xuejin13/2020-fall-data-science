@@ -142,14 +142,59 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 
 1. Write a query that returns each zipcode and their population for 2000 and 2010.
    ```
-   [YOUR QUERY HERE]
+   WITH
+     Table2000 AS (
+     SELECT
+       zipcode,
+       SUM(population) as total_population_2000
+     FROM
+       `bigquery-public-data.census_bureau_usa.population_by_zip_2000`
+     GROUP BY
+       zipcode
+     ),
+     Table2010 AS (
+     SELECT 
+       zipcode,
+       SUM(population) as total_population_2010
+     FROM 
+       `bigquery-public-data.census_bureau_usa.population_by_zip_2010` 
+     GROUP BY 
+       zipcode 
+     )
+    
+   SELECT
+     A.zipcode,
+     A.total_population_2000,
+     B.total_population_2010  
+   FROM
+     Table2000 as A 
+     JOIN 
+     Table2010 as B
+     ON A.zipcode = B.zipcode 
    ```
 
 ### For the next section, use the `bigquery-public-data.google_political_ads.advertiser_weekly_spend` table.
 
 1. Using the `advertiser_weekly_spend` table, write a query that finds the advertiser_name that spent the most in usd.
    ```
-   [YOUR QUERY HERE]
+   WITH 
+     T as (
+     SELECT
+       advertiser_name,
+       SUM(spend_usd) as usd,
+     FROM
+       `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+     GROUP BY 
+       advertiser_name 
+     )
+  
+   SELECT 
+     *
+   FROM 
+     T
+   ORDER BY 
+     T.usd DESC
+   LIMIT 1
    ```
 2. Who was the 6th highest spender? (No need to insert query here, just type in the answer.)
 
