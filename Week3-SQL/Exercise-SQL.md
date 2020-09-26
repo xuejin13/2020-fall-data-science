@@ -13,12 +13,12 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 
 5. Write a query that tells us how many rows are in the table.
    ```
-	SELECT
-  		COUNT(*)
-	FROM
-  		`bigquery-public-data.austin_311.311_service_requests`
-	LIMIT
-  		1000 
+   SELECT
+     COUNT(*)
+   FROM
+     `bigquery-public-data.austin_311.311_service_requests`
+   LIMIT
+     1000 
    ```
 
 6. Write a query that tells us how many _distinct_ values there are in the complaint_description column.
