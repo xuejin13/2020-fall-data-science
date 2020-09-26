@@ -15,7 +15,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
    ```SELECT
   COUNT(*)
 FROM
-  `bigquery-public-data.austin_311.311_service_requests`
+  \`bigquery-public-data.austin_311.311_service_requests\`
 LIMIT
   1000 ```
 
