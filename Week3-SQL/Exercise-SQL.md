@@ -317,18 +317,69 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 ## For this next section, use the `new_york_citibike` datasets.
 
 1. Who went on more bike trips, Males or Females?
+
    ```
-   [YOUR QUERY HERE]
+	Ans: Males
+
+   SELECT
+     gender,
+     count(*) AS count
+   FROM
+     `bigquery-public-data.new_york_citibike.citibike_trips`
+   group by 
+     gender 
    ```
+
 2. What was the average, shortest, and longest bike trip taken in minutes?
 
    ```
-   [YOUR QUERY HERE]
+   WITH
+     T AS (
+   SELECT
+     ROUND(tripduration / 60, 2) as trip_duration
+   FROM
+     `bigquery-public-data.new_york_citibike.citibike_trips` )
+    
+   SELECT
+     MIN(trip_duration) as shortest_trip,
+     AVG(trip_duration) as average_trip,
+     MAX(trip_duration) as longest_trip,
+   FROM
+     T
    ```
 
 3. Write a query that, for every station_name, has the amount of trips that started there and the amount of trips that ended there. (Hint, use two temporary tables, one that counts the amount of starts, the other that counts the number of ends, and then join the two.)
    ```
-   [YOUR QUERY HERE]
+   WITH
+     T_start AS (
+     SELECT
+       start_station_name,
+       count(start_station_name) AS started_here
+     FROM
+       `bigquery-public-data.new_york_citibike.citibike_trips`
+     GROUP BY
+       start_station_name  
+     ),
+     T_end AS (
+     SELECT
+       end_station_name ,
+       count(end_station_name) AS ended_here
+     FROM
+       `bigquery-public-data.new_york_citibike.citibike_trips`
+     GROUP BY
+       end_station_name   
+     )
+    
+   SELECT
+     A.start_station_name,
+     A.started_here,
+     B.ended_here 
+   FROM
+     T_start AS A
+     JOIN
+     T_end AS B
+     ON  
+     A.start_station_name  = B.end_station_name 
    ```
 
 # The next section is the Google Colab section.
